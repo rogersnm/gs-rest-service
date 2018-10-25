@@ -32,50 +32,68 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-public class WordControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+import static org.junit.Assert.assertEquals;
 
-    @Test
-    public void testFivePositiveWords() throws Exception {
-        List<String> words = Arrays.asList("kayak", "sagas", "solos", "eve", "anna");
+import org.junit.Test;
 
-        for (String word : words) {
-            this.mockMvc.perform(get("/words/" + word )).andDo(print()).andExpect(status().isOk())
-                    .andExpect(jsonPath("$.palindrome").value(true));
-        }
+public WordControllerTest
+{
+    private WordController wordController
+    private String input;
+
+    @Before
+    public void setUp() throws Exception 
+    {
+        input = null;
+        wordController= new WordController ();
+    }
+
+    @After
+    public void tearDown() throws Exception 
+    {
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void nullStringTest() throws Exception 
+    {
+        assertTrue(wordController.isStringNull(null));
+
     }
 
     @Test
-    public void testFiveNegativeWords() throws Exception {
-        List<String> words = Arrays.asList("foo", "bar", "buzz", "fizz", "cloud");
+    public void emptyStringTest() throws Exception 
+    {
+        input = "";
+        assertTrue(wordController.isStringEmpty(input));
 
-        for (String word : words) {
-            this.mockMvc.perform(get("/words/" + word )).andDo(print()).andExpect(status().isOk())
-                    .andExpect(jsonPath("$.palindrome").value(false));
-        }
     }
 
     @Test
-    public void testFivePositiveAnagrams() throws Exception {
-        List<String> words = Arrays.asList("foo", "kkppd", "buzzbu", "pizizp", "gggoo");
-
-        for (String word : words) {
-            this.mockMvc.perform(get("/words/" + word )).andDo(print()).andExpect(status().isOk())
-                    .andExpect(jsonPath("$.anagramOfPalindrome").value(true));
-        }
+    public void checkSingleCharTest() throws Exception 
+    {
+        input = "H";
+        assertTrue(wordController.isSingleCharTest(input));
     }
 
     @Test
-    public void testFiveNegativeAnagrams() throws Exception {
-        List<String> words = Arrays.asList("abcd", "five", "eleven", "pizza", "eved");
+    public void validPalindromeTest() throws Exception 
+    {
+        input = "abc";
+        assertTrue(wordController.CheckStringPalindromeOrNot(input));
+    }
 
-        for (String word : words) {
-            this.mockMvc.perform(get("/words/" + word )).andDo(print()).andExpect(status().isOk())
-                    .andExpect(jsonPath("$.anagramOfPalindrome").value(false));
-        }
+    @Test
+    public void validAnagramOfPalindromeTest() throws Exception
+    {
+        input = "aab";
+        assertTrue(wordController.canFormPalindrome(input));
+    }
+
+    @Test
+    public void invalidPalindromeTest() throws Exception 
+    {
+        input = "testing false case for palindrome";
+        assertFalse(wordController.CheckStringPalindromeOrNot(input));
     }
 }
